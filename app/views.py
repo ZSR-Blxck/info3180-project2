@@ -5,9 +5,13 @@ Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file creates your application.
 """
 
-from app import app
+from app import app, db, login_manager
 from flask import render_template, request, jsonify, send_file
-import os
+from flask_login import login_user, logout_user, current_user, login_required
+from app.forms import *
+from app.models import *
+import os, datetime, jwt
+from functools import wraps
 
 
 ###
@@ -18,6 +22,192 @@ import os
 def index():
     return jsonify(message="This is the beginning of our API")
 
+@app.route('/api/register', methods=['POST'])
+def register():
+
+    form = RegisterForm()
+    
+    if request.method=='POST' and form.validate_on_submit():
+        
+        try:
+            uname = form.username.data
+            passw = form.password.data
+            name = form.name.data
+            mail=form.email.data
+            location=form.location.data
+            bio=form.biography.data
+            photo = form.photo.data
+            date = str(datetime.date.today())
+            filename = uname+secure_filename(photo.filename)
+                        
+            user = User(username=uname, password=passw, name=name, email=mail, location=location, biography=bio, profile_photo=filename, joined_on=date)
+            photo.save(os.path.join("./app",app.config['PROFILE_IMG_UPLOAD_FOLDER'], filename))
+            db.session.add(user)
+            db.session.commit()
+            
+            return jsonify(message = "User successfully registered")
+            
+            
+        except Exception as e:
+            db.session.rollback()
+            print e
+            return jsonify(errors=["Internal Error"])
+    
+    return jsonify(errors=form_errors(form))
+
+@app.route('/api/auth/login', methods=["POST"])
+def login():
+
+    form = LoginForm()
+    if request.method == "POST" and form.validate_on_submit():
+        # change this to actually validate the entire form submission
+        # and not just one field
+        if form.username.data:
+            # Get the username and password values from the form.
+            username = form.username.data
+            password = form.password.data
+
+            # using your model, query database for a user based on the username
+            # and password submitted. Remember you need to compare the password hash.
+            # You will need to import the appropriate function to do so.
+            # Then store the result of that query to a `user` variable so it can be
+            # passed to the login_user() method below.
+
+            user = users.query.filter_by(username=username).first()
+
+            if user is not None and check_password_hash(users.password, password):
+
+                payload = {'user': users.username}
+                jwt_token = jwt.encode(payload,app.config['SECRET_KEY'],algorithm = "HS256")
+                response = {'message': 'User successfully logged in','token':jwt_token, "user_id": user.id}
+            
+                return jsonify(response)
+            
+            return jsonify(errors="Username or password is incorrect")
+    
+        return jsonify(errors=form_errors(form))
+
+@app.route('/api/auth/logout', methods = ['GET'])
+@token_authenticate
+def logout():
+    return jsonify(message= "User successfully logged out.")
+
+
+@app.route('/api/cars', methods = ['GET','POST'])
+@token_authenticate
+def viewCars():
+    if request.method == 'GET':
+        getAll = cars.query.all()
+        car = []
+
+        for car in getAll:
+            user= users.query.filter_by(id=cars.user_id).first()
+            carObj = {"id":cars.id, "description":cars.description, "make": cars.make, "colour": cars.colour, "year": cars.year,"transmission":cars.transmission,"car_type":cars.car_type,"price":cars.price,"photo": os.path.join(app.config['PROFILE_IMG_UPLOAD_FOLDER'],cars.photo)}
+            cars.append(carObj)
+
+        return jsonify(cars=cars)
+
+    if request.method == 'POST':
+
+        form = CarForm()
+
+        if form.validate_on_submit():
+
+            u_id = form.user_id.data
+            description =form.description.data
+            make = form.make.data
+            colour = form.colour.data
+            year = form.year.data
+            transmission = form.transmission.data
+            car_type = form.car_type.data
+            price = form.price.data
+            photo = form.photo.data
+            
+            user = users.query.filter_by(id=u_id).first()
+
+            car = cars(user_id = u_id, description = description, make = make, colour = colour, year = year, transmission= transmission, car_type=car_type, price=price, photo=photo)
+            photo.save(os.path.join("./app", app.config['CARS_UPLOAD_FOLDER'],filename))
+            db.session.add(car)
+            db.session.commit()
+            return jsonify(status=201, message="Car Added")
+            
+            
+        print form.errors.items()
+        return jsonify(status=200, errors=form_errors(form))
+
+
+@app.route('/api/cars/<car_id>/favourite', methods =['GET','POST'])
+@token_authenticate
+def findCar(car_id):
+    
+    if request.method == 'GET':
+        make = Cars.query.filter_by( car_id = car_id).all()
+        
+        model = Cars.query.filter_by(car_id = car_id).first()
+        response = {"status": "ok", "post_data":{"description":cars.description, "make": cars.make, "colour": cars.colour, "year": cars.year,"transmission":cars.transmission,"car_type":cars.car_type,"price":cars.price,"photo": os.path.join(app.config['PROFILE_IMG_UPLOAD_FOLDER'],cars.photo)}}
+        
+        for favorite in favorites:
+            favObj = {"id":favourites.id, "user_id": favourites.user_id, "car_id":favourites.car_id}
+            response["post_data"]["favorites"].append(favObj)
+
+        return jsonify(response)
+    
+    
+    if request.method == 'POST':
+        
+        form = FavForm()
+        
+        if form.validate_on_submit():
+            
+            fid = form.user_id.data
+            car_id = form.car_id.data
+            
+            user = users.query.filter_by(id=u_id).first()
+            
+            fav = favourites(user_id=fid,car_id=car_id,)
+            db.session.add(fav)
+            db.session.commit()
+            return jsonify(status=201, message="New favourite")
+            
+            
+        print form.errors.items()
+        return jsonify(status=200, errors=form_errors(form))
+
+@app.route('/api/cars/<user_id>/favourites', methods =['GET','POST'])
+@token_authenticate
+def findUser(user_id):
+    
+    if request.method == 'GET':
+        user = users.query.filter_by( user_id = user_id).all()
+        
+        user = users.query.filter_by(user_id = user_id).first()
+        response = {"status": "ok", "post_data":{"description":description,"make":make,"colour":colour,"year":year,"transmission":transmission,"car_type":car_type, "price":price, "photo":photo, "user_id":user_id }}
+        
+        for favourite in favourites:
+            favObj = {"id":favourites.id, "user_id": favourites.user_id, "car_id":favourites.car_id}
+            response["post_data"]["favorites"].append(favObj)
+
+        return jsonify(response)
+
+    if request.method == 'POST':
+        
+        form = FavForm()
+        
+        if form.validate_on_submit():
+            
+            fid = form.user_id.data
+            car_id = form.car_id.data
+            
+            user = users.query.filter_by(id=u_id).first()
+            
+            fav = favourites(user_id=fid,car_id=car_id,)
+            db.session.add(fav)
+            db.session.commit()
+            return jsonify(status=201, message="New favourite")
+            
+            
+        print form.errors.items()
+        return jsonify(status=200, errors=form_errors(form))
 
 ###
 # The functions below should be applicable to all Flask apps.
