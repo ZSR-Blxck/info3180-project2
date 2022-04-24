@@ -8,21 +8,25 @@ This file creates your application.
 from app import app, db, login_manager
 from flask import render_template, request, jsonify, send_file
 from flask_login import login_user, logout_user, current_user, login_required
+from flask_cors import CORS,cross_origin
 from app.forms import *
 from app.models import *
 import os, datetime, jwt
 from functools import wraps
 
-
+CORS(app,resources={r"/api": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
 ###
 # Routing for your application.
 ###
 
 @app.route('/')
+@cross_origin(origin='*',headers=['content-type'])
 def index():
-    return jsonify(message="This is the beginning of our API")
+    return jsonify(message="Home")
 
 @app.route('/api/register', methods=['POST'])
+@cross_origin(origin='*',headers=['content-type'])
 def register():
 
     form = RegisterForm()
@@ -50,12 +54,13 @@ def register():
             
         except Exception as e:
             db.session.rollback()
-            print e
+            print (e)
             return jsonify(errors=["Internal Error"])
     
     return jsonify(errors=form_errors(form))
 
 @app.route('/api/auth/login', methods=["POST"])
+@cross_origin(origin='*',headers=['content-type'])
 def login():
 
     form = LoginForm()
@@ -88,13 +93,15 @@ def login():
         return jsonify(errors=form_errors(form))
 
 @app.route('/api/auth/logout', methods = ['GET'])
-@token_authenticate
+@cross_origin(origin='*',headers=['content-type'])
+#@token_authenticate
 def logout():
     return jsonify(message= "User successfully logged out.")
 
 
 @app.route('/api/cars', methods = ['GET','POST'])
-@token_authenticate
+@cross_origin(origin='*',headers=['content-type'])
+#@token_authenticate
 def viewCars():
     if request.method == 'GET':
         getAll = cars.query.all()
@@ -132,12 +139,13 @@ def viewCars():
             return jsonify(status=201, message="Car Added")
             
             
-        print form.errors.items()
+        print (form.errors.items())
         return jsonify(status=200, errors=form_errors(form))
 
 
 @app.route('/api/cars/<car_id>/favourite', methods =['GET','POST'])
-@token_authenticate
+@cross_origin(origin='*',headers=['content-type'])
+#@token_authenticate
 def findCar(car_id):
     
     if request.method == 'GET':
@@ -170,11 +178,12 @@ def findCar(car_id):
             return jsonify(status=201, message="New favourite")
             
             
-        print form.errors.items()
+        print (form.errors.items())
         return jsonify(status=200, errors=form_errors(form))
 
 @app.route('/api/cars/<user_id>/favourites', methods =['GET','POST'])
-@token_authenticate
+@cross_origin(origin='*',headers=['content-type'])
+#@token_authenticate
 def findUser(user_id):
     
     if request.method == 'GET':
@@ -206,7 +215,7 @@ def findUser(user_id):
             return jsonify(status=201, message="New favourite")
             
             
-        print form.errors.items()
+        print (form.errors.items())
         return jsonify(status=200, errors=form_errors(form))
 
 ###
