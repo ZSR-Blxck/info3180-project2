@@ -2,7 +2,8 @@
 export default {
     data() {
         return {
-            message: "Buy and Sell Cars Online"
+            message: "Buy and Sell Cars Online",
+            message2: "United Auto Sales provides the fastest, easiest and most user friendly way to buy or sell cars online. Find a Great Price on the Vehicle You Want"
         };
     },
 }
@@ -13,6 +14,7 @@ export default {
       <div class="grid-container">
         <div class="item1">
             <h1>{{ message }}</h1>
+            <p>{{message2}}</p>
         </div>
         <div class="item2">
             <img alt="Vue logo" class="logo" src="@/assets/2018-Ford-Mustang-GT-Performance-Pack-Manual-04.webp"/>
@@ -34,7 +36,7 @@ export default {
     }
     img{
         width:100%;
-        height:100%;
+        height:120%;
     }
     .item1{
         text-align:center;
