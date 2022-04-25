@@ -28,66 +28,36 @@
 	        </form>
 	    </div>
 
-	    <div class="cars">
-	    	<div v-if="loading" class="loading">Loading...</div>
-
-    		<div v-if="error" class="error">{{ error }}</div>
-		  	
-		  	<div v-if="cars" class="content">
-				<b-card>
-					<b-card-body>
-						hi
-					</b-card-body>
-				</b-card>
-				<b-card>
-					<b-card-body>
-						<h2> {{cars.year}}{{cars.make}}</h2>
-						<p> cars.model</p>
-					</b-card-body>
-				</b-card>
-			</div>
-			<div v-else null class="content">
-				<h1> No Cars Added</h1>
-			</div>
-		</div>
+	     <section class="cars">
+            <div v-if="!cars.length" class="no-cars">
+                You haven't added any cars.
+            </div>
+            <div v-for="(car, index) in cars" class="card">
+                <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image</text></svg>
+                <div class="card-body">
+                    <h5 class="card-title">{{ car.Make }}</h5>
+                    <p class="card-text">{{ car.Model }}</p>
+                    <p class="card-text text-center text-muted">
+                        <img src="images/star.svg" alt="star" v-for="n in car.favorite" /> <br><small>({{ car.favorite + '/5' }} {{ (car.favorite > 1) ? 'stars' : 'star' }})</small>
+                    </p>
+                </div>
+                <div class="card-footer text-muted d-flex">
+                    <button @click="editMovie(index)" class="btn btn-primary btn-sm text-right"><img src="images/pencil.svg" alt=""> Edit</button>
+                    <button @click="removeMovie(index)" class="btn btn-danger btn-sm text-right"><img src="images/trashcan.svg" alt=""> Remove</button>
+                </div>
+            </div>
+            <!-- <car-card v-for="(car, index) in cars" 
+                        v-bind:car="car"
+                        v-bind:key="index" 
+                        v-on:edit="editMovie(index)" 
+                        v-on:remove="removeMovie(index)">
+            </car-card> -->
+        </section>
 
 	</div>
 </template>
 <script>
-	export default {
-		data() {
-		    return {
-		    	loading: false,
-		      	cars: null,
-		      	error: null,
-		    }
-		},
-		created(){
-		this.$watch(
-			()=>this.$route.params,
-			()=> {
-				this.fetchData()
-			},
-			{immediate:true}
-		)
-	},
-	methods:{
-	  	fetchData() {
-	  		this.error = this.cars= null
-	  		this.loading = true
-
-	  		getCars(this.$route.params.id,(err,post) => {
-	  			this.loading = false
-	  			if(err){
-	  				this.error = err.toString()
-	  			} else {
-	  				this.cars=cars
-	  			}
-
-	  		})
-	  	},
-	},
-	}
+	
 </script>
 <style scoped>
 </style>

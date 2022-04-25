@@ -65,7 +65,7 @@
                                     <input type="file"  @change="uploadphoto" name="car_photo" ref="file" class="form-control" />
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" @click="onSubmit" >Add Car</button>
+                                    <button type="submit" @click="onSubmit" >Save</button>
                                 </div>
                         </form>
                            
@@ -152,5 +152,11 @@
         margin-left:10%;
     }
     body{
+    }
+    button{
+        background-color: lightgreen;
+        float:left;
+        width: 200px;
+        border-radius: 5px;
     }
 </style>
