@@ -1,32 +1,26 @@
  <template>
+       
         <div>
-            <div class="flex items-center justify-center h-screen">
-                <div class="hidden sm:block w-1/2 bg-cover h-screen" style='background: url(newFood.png)'>
-                    <div class="bg-blue-800 w-full h-screen bg-opacity-20">
-                    </div>
-                </div>
-                <div class="sm:w-1/2">
-                    <div class="p-5 w-4/5 mx-auto text-left font-raleway">
+            <div class="box">
+                
+                <h3>
+                    Login to your account
+                </h3>
+                <div class="grid-container">
+                    <form @submit="login">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" v-model="email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" v-model="password" class= "form-control">
+                        </div>
                         
-                        <h1 class="font-bold text-left font-montserrat text-4xl sm:text-6xl mb-10">
-                            Login
-                        </h1>
-                       
-                        <form @submit="login">
-                            <div class="my-5">
-                                <h1 class="text-left font-bold mb-5 font-montserrat">Email</h1>
-                                <input type="email" v-model="email" class="text-sm outline-none pb-5 w-4/5 bg-transparent border-b hover:border-blue-700 focus:border-blue-700">
-                            </div>
-                            <div class="my-5">
-                                <h1 class="text-left font-bold mb-5 font-montserrat">Password</h1>
-                                <input type="password" v-model="password" class="text-sm outline-none pb-5 w-4/5 bg-transparent border-b hover:border-blue-700 focus:border-blue-700">
-                            </div>
-                            
-                            <button type="submit" :disabled="password.length < 3" class="bg-green-400 p-5 text-white">
-                                Login <font-awesome-icon class="ml-3" :icon="['fas', 'arrow-right']" /> 
-                            </button>                            
-                        </form>
-                    </div>
+                        <button type="submit" :disabled="password.length < 3">
+                            Login <font-awesome-icon class="ml-3" :icon="['fas', 'arrow-right']" /> 
+                        </button>                            
+                    </form>
                 </div>
             </div>
         </div>
@@ -66,5 +60,32 @@
             }
         }
     </script>
-    <style scoped>
+    <style>
+        .grid-container {
+          display: grid;
+          grid-template-columns: auto auto;
+          grid-gap: 10px;
+          padding: 10px;
+        }
+
+        .grid-container > div {
+        }
+        form{
+            background-color:white;
+            width:40%;
+            margin-left:65%;
+            padding:20px;
+        }
+        body{
+            background-color:lightgrey;
+        }
+        h3{
+            text-align:center;
+        }
+        button{
+            margin-top:30px;
+        }
+        label{
+            font-weight:bold;
+        }
     </style>
