@@ -25,7 +25,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/')
 @cross_origin(origin='*',headers=['content-type'])
 def index():
-    return jsonify(message="Home")
+    return send_file(os.path.join('../dist/', 'index.html'))
 
 @app.route('/api/register', methods=['POST'])
 @cross_origin(origin='*',headers=['content-type'])
