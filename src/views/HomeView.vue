@@ -39,6 +39,7 @@ export default {
         height:120%;
     }
     .item1{
+        padding-top:20%;
         text-align:center;
         width:70%;
     }

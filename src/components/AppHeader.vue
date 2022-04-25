@@ -23,7 +23,7 @@
               <RouterLink to="/explore" class="nav-link active">Explore</RouterLink>
             </li>
             <li class="nav-item">
-              <RouterLink to="/users" class="nav-link active">Users</RouterLink>
+              <RouterLink to="/users" class="nav-link active">My Profile</RouterLink>
             </li>
             <li class="nav-item">
               <RouterLink to="/cars/new" class="nav-link active">Add Car</RouterLink>

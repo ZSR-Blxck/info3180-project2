@@ -1,33 +1,40 @@
 <template>
   <div>
-    <div>
-      <div class="bg-grey-lighter about object-cover bg-cover bg-center min-h-screen flex flex-col">
-        <div
-          class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
-          <form @submit.prevent="registerUser" class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
+    <h1>Register New User</h1>
+      <form @submit.prevent="registerUser">
+      <div class="grid-container">
+	  		<div class="form-group">
 
-              <h1 class="mb-8 text-3xl text-center">Sign up</h1>
+	  			<label for="username">Username</label>
+	  			<input type="text" name="username" placeholder="Username" v-model="username" required />
 
-              <input type="text" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="Fullname" v-model="fullname" required />
+	  			<label for ="fullname">Fullname</label>
+	      	<input type="text" name="fullname" placeholder="Fullname" v-model="fullname" required />
+	      
+	      	<label for ="location">Location</label>
+	      	<input type="text" name="location" placeholder="location" v-model="location" required />
+	  		</div>
 
-              <input type="text" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="Username" v-model="username" required />
+	  		<div class="form-group">
+	  			<label for ="password">Password</label>
+	  			<input type="password" name="password" placeholder="Password" v-model="password" required/>
 
-              <input type="password" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="Password" v-model="password" required/>
-          
-              <input type="text" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="Email" v-model="email" required/>
+	  			<label for ="email">Email</label>
+	      	<input type="text" name="email" placeholder="Email" v-model="email" required/>	      
+	      </div>
+	  	</div>
 
-              <input type="text" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="location" v-model="location" required />
+	  		<div class="form-group">
+	  			<label for="bio">Biography</label>
+	  			<textarea name="bio" v-model="bio"/>
+	  		</div>
+	      <div class="form-group">
+	      	<label for="user-photo">Upload Photo</label>
+	        <input type="file"  @change="uploadphoto" name="user_photo" ref="file" class="form-control" />
+	      </div>
 
-              <textarea class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="biography" v-model="bio" required></textarea>
-
-              <label for="user-photo">Upload Photo</label>
-                                <input type="file"  @change="uploadphoto" name="user_photo" ref="file" class="form-control" />
-
-              <button type="submit" class="w-full text-center py-2.5 rounded-lg bg-green-500 text-black hover:bg-green-600 focus:outline-none my-1" @click="onSubmit">Register</button>
-            </form>
-          </div>
-        </div>
-      </div>
+	      <button type="submit" class="w-full text-center py-2.5 rounded-lg bg-green-500 text-black hover:bg-green-600 focus:outline-none my-1" @click="onSubmit">Register</button>
+      </form>
   </div>
 </template>
 <script>
@@ -61,7 +68,41 @@ export default {
         }),
       });
     },
-      
+
   }
 };
 </script>
+<style>
+	.grid-container {
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-gap: 10px;
+      padding: 10px;
+    }
+
+    .grid-container > div {
+    }
+    form{
+        margin-left:15%;
+        background-color:white;
+        width: 70%;
+        text-align:left;
+        padding:2%;
+        border-radius: 10px;
+        font-weight:bold;
+    }
+    h1{
+    	margin-left:15%;
+    }
+    body{
+        background-color:lightgrey;
+    }
+    input{
+    	width:100%;
+    	padding:10px;
+    	}
+    textarea{
+    	width:100%;
+    	height:150px;
+    }
+</style>
