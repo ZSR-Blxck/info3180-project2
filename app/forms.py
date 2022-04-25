@@ -18,7 +18,7 @@ class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[InputRequired()])
     location = StringField('Location', validators=[InputRequired()])
     biography = TextAreaField('Biography',validators=[InputRequired()])
-    photo= FileField('Profile Photo',validators=[FileRequired(),FileAllowed(['jpg', 'png'], 'Images only!')])
+    user_photo= FileField('Profile Photo',validators=[FileRequired(),FileAllowed(['jpg', 'png'], 'Images only!')])
     
 class CarForm(FlaskForm):
     description = StringField('description', validators=[InputRequired()])

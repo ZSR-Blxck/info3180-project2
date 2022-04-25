@@ -8,6 +8,8 @@ This file creates your application.
 from app import app, db, login_manager
 from flask import render_template, request, jsonify, send_file
 from flask_login import login_user, logout_user, current_user, login_required
+from werkzeug.utils import secure_filename
+from flask.helpers import send_from_directory
 from flask_cors import CORS,cross_origin
 from app.forms import *
 from app.models import *
@@ -34,17 +36,17 @@ def register():
     if request.method=='POST' and form.validate_on_submit():
         
         try:
+            name = form.name.data
             uname = form.username.data
             passw = form.password.data
-            name = form.name.data
             mail=form.email.data
             location=form.location.data
             bio=form.biography.data
-            photo = form.photo.data
+            photo = form.user_photo.data
             date = str(datetime.date.today())
             filename = uname+secure_filename(photo.filename)
                         
-            user = User(username=uname, password=passw, name=name, email=mail, location=location, biography=bio, profile_photo=filename, joined_on=date)
+            user = users(username=uname, password=passw, name=name, email=mail, location=location, biography=bio, photo=filename, date_joined=date)
             photo.save(os.path.join("./app",app.config['PROFILE_IMG_UPLOAD_FOLDER'], filename))
             db.session.add(user)
             db.session.commit()

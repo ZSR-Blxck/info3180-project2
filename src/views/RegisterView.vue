@@ -1,71 +1,67 @@
- <template>
-        <div>
-            <div class="flex items-center justify-center h-screen">
+<template>
+  <div>
+    <div>
+      <div class="bg-grey-lighter about object-cover bg-cover bg-center min-h-screen flex flex-col">
+        <div
+          class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
+          <form @submit.prevent="registerUser" class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
 
-                <div class="sm:w-1/2">
-                    <div class="p-5 w-4/5 mx-auto text-left font-raleway">
-                        <h1 class="font-bold text-left font-montserrat text-4xl sm:text-6xl mb-7">
-                            Sign Up
-                        </h1>
-                        <p v-show="error" class="text-sm text-red-500">{{ errorMsg }}</p>
-                        <form @submit="register">
-                            <div class="my-4">
-                                <h1 class="text-left font-bold mb-2 font-montserrat">Name</h1>
-                                <input type="text" v-model="name" class="text-sm outline-none pb-2 w-4/5 bg-transparent border-b hover:border-blue-700 focus:border-blue-700">
-                            </div>
-                            <div class="my-4">
-                                <h1 class="text-left font-bold mb-2 font-montserrat">Email</h1>
-                                <input type="email" v-model="email" class="text-sm outline-none pb-2 w-4/5 bg-transparent border-b hover:border-blue-700 focus:border-blue-700">
-                            </div>
-                            <div class="my-4">
-                                <h1 class="text-left font-bold mb-2 font-montserrat">Password</h1>
-                                <input type="password" v-model="password" class="text-sm outline-none pb-2 w-4/5 bg-transparent border-b hover:border-blue-700 focus:border-blue-700">
-                            </div>
-                            <div class="my-4">
-                                <h1 class="text-left font-bold mb-2 font-montserrat">Username</h1>
-                                <input type="text" v-model="username" class="text-sm outline-none pb-2 w-4/5 bg-transparent border-b hover:border-blue-700 focus:border-blue-700">
-                            </div>
-                            
-                            <button type="submit" :disabled="name.length < 6 || password.length < 6 || username.length < 3" class="bg-green-400 p-5 text-white">
-                                Sign Up <font-awesome-icon class="ml-3" :icon="['fas', 'arrow-right']" /> 
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+              <h1 class="mb-8 text-3xl text-center">Sign up</h1>
+
+              <input type="text" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="Fullname" v-model="fullname" required />
+
+              <input type="text" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="Username" v-model="username" required />
+
+              <input type="password" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="Password" v-model="password" required/>
+          
+              <input type="text" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="Email" v-model="email" required/>
+
+              <input type="text" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="location" v-model="location" required />
+
+              <textarea class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" placeholder="biography" v-model="bio" required></textarea>
+
+              <label for="user-photo">Upload Photo</label>
+                                <input type="file"  @change="uploadphoto" name="user_photo" ref="file" class="form-control" />
+
+              <button type="submit" class="w-full text-center py-2.5 rounded-lg bg-green-500 text-black hover:bg-green-600 focus:outline-none my-1" @click="onSubmit">Register</button>
+            </form>
+          </div>
         </div>
-    </template>
-    <script>
-        export default {
-            name: 'Register',
-            data() {
-                return {
-                    name: '',
-                    email: '',
-                    password: '',
-                    username: '',
-                    error: false,
-                    errorMsg: `An Error occurred, please try again`
-                }
-            },
-            methods: {
-                async register(e) {
-                    try {
-                        e.preventDefault()
-                            await this.axios.post(`http://localhost:1337/auth/local/register`, {
-                            name: this.name,
-                            password: this.password,
-                            email: this.email,
-                            username: this.username
-                        })
-                        this.$router.push('login')
-                    } catch(e) {
-                        this.error = true
-                        this.email = ''
-                    } 
-                }
-            }
-        }
-    </script>
-    <style scoped>
-    </style>
+      </div>
+  </div>
+</template>
+<script>
+export default {
+  name: "register",
+  data() {
+    return {
+      name: "",
+      username: "",
+      password: "",
+      email: "",
+      location:"",
+      bio:"",
+      user_photo:"",
+      message:null,
+    };
+  },
+  methods: {
+    async registerUser() {
+      await fetch("http://localhost:3000/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: "this.name",
+          username: "this.username",
+          email: "this.email",
+          password: "this.password",
+          location: "this.location",
+          bio: "this.bio",
+          user_photo:"this.user_photo"
+        }),
+      });
+    },
+      
+  }
+};
+</script>
