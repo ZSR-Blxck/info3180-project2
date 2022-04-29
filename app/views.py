@@ -46,8 +46,11 @@ def register():
             date = str(datetime.date.today())
             filename = uname+secure_filename(photo.filename)
                         
-            user = users(username=uname, password=passw, name=name, email=mail, location=location, biography=bio, photo=filename, date_joined=date)
+            #user = users(username=uname, password=passw, name=name, email=mail, location=location, biography=bio, photo=filename, date_joined=date)
             photo.save(os.path.join("./app",app.config['PROFILE_IMG_UPLOAD_FOLDER'], filename))
+            db = connect_db()
+            cur=db.cursor()
+            cur.execute('insert into user(username,password,name,email,location,biography,photo,date_joined) values (uname, passw, name, email, location, bio, filename, date)' )
             db.session.add(user)
             db.session.commit()
             
@@ -137,6 +140,8 @@ def viewCars():
             car = cars(user_id = u_id, description = description, make = make, colour = colour, year = year, transmission= transmission, car_type=car_type, price=price, photo=photo)
             photo.save(os.path.join("./app", app.config['CARS_UPLOAD_FOLDER'],filename))
             db.session.add(car)
+            cur=db.cursor()
+            cur.execute('insert into cars(user_id, description, make, colour, year, transmission, car_type, price, photo) values (u_id, description, make, colour, year, transmission, car_type, price, photo)' )
             db.session.commit()
             return jsonify(status=201, message="Car Added")
             

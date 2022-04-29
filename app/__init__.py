@@ -6,7 +6,7 @@ from .config import Config
 from flask_wtf.csrf import CSRFProtect
 from flask_cors import CORS, cross_origin
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../dist/assets')
 app.config.from_object(Config)
 
 db = SQLAlchemy(app)
